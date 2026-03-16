@@ -33,7 +33,7 @@
     python examples/pc_demo.py
     ```
 
-## 2. MicroPython 用户 (ESP32 / K210)
+## 2. MicroPython 用户 (ESP32 / STM32)
 * **部署**：使用 Thonny 或 ampy 将 `python/ai_sensor/` 文件夹上传至开发板的 `/lib` 目录。
 * **配置**：打开 `examples/esp32_mpy_demo.py`，修改 `TX/RX` 引脚编号。
 * **运行**：在 IDE 中点击 **“运行”** 即可查看结果。

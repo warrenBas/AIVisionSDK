@@ -21,7 +21,7 @@ A cross-platform serial communication SDK designed for AI vision sensors, suppor
     python examples/pc_demo.py
     ```
 
-### 2. MicroPython Users (ESP32 / K210)
+### 2. MicroPython Users (ESP32 / STM32)
 * **Prerequisite**: Ensure the MicroPython firmware is flashed.
 * **Deployment**: 
     1. Use Thonny IDE or the `ampy` tool to upload the `python/ai_sensor/` folder to the `/lib` directory on your development board.
