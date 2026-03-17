@@ -24,7 +24,10 @@
    ```
 
 2. **硬件连接**：将传感器通过 USB 转 TTL 模块连接至电脑。
-3. **配置**：进入 `python/` 目录，打开 `examples/pc_demo.py`，修改串口号（如 `COM3` 或 `/dev/ttyUSB0`）。
+3. **配置**：
+    a. 进入 `python/` 目录，
+    b. pip install -e .
+    c. 打开 `examples/pc_demo.py`，修改串口号（如 `COM3` 或 `/dev/ttyUSB0`）。
 4. **运行**：
     ```bash
     # PC端只读demo

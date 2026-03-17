@@ -14,8 +14,9 @@ A cross-platform serial communication SDK designed for AI vision sensors, suppor
 * **Hardware Connection**: Connect the sensor to your computer via a USB-to-TTL module.
 * **Configuration**: 
     1. Navigate to the `python/` directory.
-    2. Open `examples/pc_demo.py`.
-    3. Modify the serial port name (e.g., `COM3` for Windows or `/dev/ttyUSB0` for Linux).
+    2. pip install -e .
+    3. Open `examples/pc_demo.py`.
+    4. Modify the serial port name (e.g., `COM3` for Windows or `/dev/ttyUSB0` for Linux).
 * **Run**:
     ```bash
     python examples/pc_demo.py

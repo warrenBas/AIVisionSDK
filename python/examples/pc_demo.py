@@ -3,6 +3,7 @@ from ai_sensor import AISensor, UartAdapter
 
 def on_result(results):
     for obj in results:
+        print(obj)
         print(f"Detect: {AISensor.get_label(obj)}, Score: {AISensor.get_score(obj)}")
         print(f"Box X: {AISensor.get_box(obj, AISensor.BOX_LEFT)}")
 
