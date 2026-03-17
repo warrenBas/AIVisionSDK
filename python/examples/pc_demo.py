@@ -8,7 +8,7 @@ def on_result(results):
         print(f"Box X: {AISensor.get_box(obj, AISensor.BOX_LEFT)}")
 
 if __name__ == "__main__":
-    adapter = UartAdapter("/dev/cu.usbserial-58570111141", 115200) # 根据实际串口修改
+    adapter = UartAdapter("/dev/cu.usbserial-58570111141", 115200) # or comX
     sensor = AISensor(adapter)
     sensor.set_callback(on_result)
     
