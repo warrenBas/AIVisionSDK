@@ -8,7 +8,7 @@ def on_result(results):
         print(f"Box X: {SenRayVarVision.get_box(obj, SenRayVarVision.BOX_LEFT)}")
 
 if __name__ == "__main__":
-    adapter = UartAdapter("/dev/cu.usbserial-58570111141", 115200) # or comX for windows
+    adapter = UartAdapter(1, 115200, 16, 17) #tx, rx
     sensor = SenRayVarVision(adapter)
     sensor.set_callback(on_result)
     
@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
 
 # if __name__ == "__main__":
-#     adapter = UartAdapter("/dev/cu.usbserial-58570111141", 115200) # or comX for windows
+#     adapter = UartAdapter(1, 115200, 16, 17) #tx, rx
 #     sensor = SenRayVarVision(adapter)
 #     # sensor.set_callback(on_result)
     

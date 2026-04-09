@@ -11,6 +11,6 @@ else:
         print("Warning: pyserial not installed. PC mode may not work.")
         raise e
     
-from ai_sensor.core import AISensor
+from ai_sensor.core import SenRayVarVision
 
-__all__ = ['AISensor', 'UartAdapter']
+__all__ = ['SenRayVarVision', 'UartAdapter']

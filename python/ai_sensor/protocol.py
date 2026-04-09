@@ -11,18 +11,16 @@ def calc_crc(data_bytes: bytearray) -> int:
         crc ^= byte
     return crc
 
-def pack_packet(msg_id: int, cmd: int, payload: bytes) -> bytes:
+def pack_packet(msg_id: int, cmd: int, payload: bytes, fragment_id: int, is_first: int, is_last: int) -> bytes:
     data_len = len(payload)
-    # is_first=1 (bit 0), is_last=1 (bit 1), reserve=0 => 0b00000011 = 3
-    flags = 3 
     
-    #set CRC=0
-    header = struct.pack(HEADER_FORMAT, MAGIC, msg_id, 0, data_len, flags, cmd, 0)
+    flags = (is_first & 0x01) | ((is_last & 0x01) << 1)
+    
+    header = struct.pack(HEADER_FORMAT, MAGIC, msg_id, fragment_id, data_len, flags, cmd, 0)
     packet = bytearray(header + payload)
-    
-    # Calculate and fill the CRC (10th byte, index 10).
     crc_val = calc_crc(packet)
-    packet[10] = crc_val
+    packet[10] = crc_val 
+    
     return bytes(packet)
 
 def unpack_header(data: bytes):

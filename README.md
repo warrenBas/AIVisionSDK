@@ -1,55 +1,100 @@
-# Senrayvar AI Sensor SDK 🚀
-
-A cross-platform serial communication SDK designed for AI vision sensors, supporting **PC (Python)**, **MicroPython (ESP32)**, and **Arduino (C++/ESP32/STM32)**.
+## 📦 Supported Platforms
+* **PC (Python)**: Windows, Linux, macOS
+* **MicroPython**: ESP32, K210, Raspberry Pi Pico
+* **Arduino (C++)**: ESP32, STM32, full Arduino series
 
 ---
 
 # 🚀 Quick Start
 
-### 1. Python Users (PC / Raspberry Pi / Jetson)
-* **install package**:
+Please select the appropriate guide based on your development environment.
+
+## Prerequisites: The interface needs to be configured as a serial port and the corresponding baud rate on the web/app.
+
+## 1. Python User (PC / Raspberry Pi / Jetson)
+
+**Prerequisites**: Python 3.x installed.
+
+### 🛠️ Installation & Preparation
+1. **Install Dependencies**:
    ```bash
    pip install pyserial
    ```
-* **Hardware Connection**: Connect the sensor to your computer via a USB-to-TTL module.
-* **Configuration**: 
-    1. Navigate to the `python/` directory.
-    2. pip install -e .
-    3. Open `examples/pc_demo.py`.
-    4. Modify the serial port name (e.g., `COM3` for Windows or `/dev/ttyUSB0` for Linux).
-* **Run**:
-    ```bash
-    python examples/pc_demo.py
-    ```
 
-### 2. MicroPython Users (ESP32 / STM32)
-* **Prerequisite**: Ensure the MicroPython firmware is flashed.
-* **Deployment**: 
-    1. Use Thonny IDE or the `ampy` tool to upload the `python/ai_sensor/` folder to the `/lib` directory on your development board.
-* **Configuration**: Open `examples/esp32_mpy_demo.py` and update the `TX/RX` pin numbers according to your wiring.
-* **Run**: Open the script in your IDE and click **"Run"** to view AI recognition results in the console.
+2. **Hardware Connection**: Connect the sensor to your computer via a USB-to-TTL module.
+3. **Configuration**:
+   a. Navigate to the `python/` directory,
+   b. Run `pip install -e .`
+   c. Open `examples/pc_demo.py` and modify the serial port (e.g., `COM3` or `/dev/ttyUSB0`).
+4. **Run**:
+   ```bash
+   python examples/pc_demo.py
+   ```
 
-### 3. Arduino / ESP32-Arduino Users
-* **Dependency**: Requires the `ArduinoJson` library.
-* **Library Installation**: 
-    1. Download the SDK as a `.zip` file.
-    2. In Arduino IDE, go to: `Sketch` -> `Include Library` -> `Add .ZIP Library...` and select the downloaded file.
+## 2. MicroPython User (ESP32 / STM32)
+* **Deployment**: Use Thonny or ampy to upload the `python/ai_sensor/` folder to the `/lib` directory on your board.
+* **Configuration**: Open `examples/mpy_demo.py` and modify the `TX/RX` pin numbers.
+* **Run**: Click **"Run"** in the IDE to view the results.
+
+## 3. Arduino / ESP32 User
+* **Dependencies**: Requires the `ArduinoJson` library(>=7.4.3).
+* **Installation**: In Arduino IDE, select `Sketch` -> `Include Library` -> `Add .ZIP Library...`, and import the SDK zip file.
 * **Run**:
-    1. Open the example: `File` -> `Examples` -> `My_AI_Sensor_SDK` -> `BasicRead`.
-    2. Select your board and port, then click **Upload**.
-    3. Open the **Serial Monitor** and set the baud rate to `115200`.
+   1. Open `File` -> `Examples` -> `My_AI_Sensor_SDK` -> `BasicRead`.
+   2. Set baud rate to `115200`, click **Upload** and open the **Serial Monitor**.
 
 ---
 
-## 🛠️ Core API Reference
+# 🛠️ SenRayVarVision SDK Core API Reference
 
-The SDK provides a consistent interface across all supported platforms:
+This SDK provides a set of cross-platform (C++/Python) consistent interfaces for the vision sensor, used for model configuration, data acquisition, and result parsing.
 
-| Function | Description |
+## 1. Basic Configuration Interface
+
+| Method (C++ / Python) | Parameters | Description |
+| :--- | :--- | :--- |
+| `setModel(type)` | `type`: Model enum value | Sets the AI model to run on the sensor (e.g., `MODEL_DETECT`, `MODEL_TRACK`, etc.). |
+| `setModelParam(...)` | `prob`, `prob2`, `h`, `s`, `v` | Dynamically adjusts recognition threshold (confidence) and H/S/V filtering parameters for color detection. |
+| `setZoom(factor)` | `factor`: 1.0 ~ 5.0 | Controls the camera's digital zoom factor, limited to the range of 1.0 to 5.0. |
+| `setDetectTrack(track)` | `track`: 0 or 1 | Enables or disables auto-tracking of detection targets. |
+
+## 2. Sensor Control Interface
+
+| Method | Parameters | Description |
+| :--- | :--- | :--- |
+| `start(is_async, timeout)` | `is_async`: Async mode (default true)<br>`timeout`: Sync wait timeout (ms) | Deploys the current configuration to the hardware and starts the sensor. In sync mode, waits for hardware ACK response. If the configuration is updated during execution, it can also be used. |
+| `stop(is_async, timeout)` | Same as above | Stops the currently running model recognition task, use start to start. |
+| `save(is_async, timeout)` | Same as above | Persists the current model configuration to the sensor's flash memory. The program runs automatically when the sensor boots up; the start update will be overwritten.|
+| `process()` | None | **Core polling function**. Must be placed in `loop()` or the main loop; responsible for parsing serial data and triggering callbacks. |
+
+## 3. Data Acquisition & Parsing
+
+### Result Status
+* `set_callback()`: By setting a callback function, it will be called when an object is detected. Use either this or `hasNewData()` - the demo shows both approaches.
+* `hasNewData()`: Checks if there are new recognition results since the last call.
+* `getItemSize()`: Returns the total number of targets recognized in the current frame.
+
+### Target Detail Parsing (Static/Class Methods)
+Pass the `JsonObject` (C++) or `dict` (Python) from the recognition result:
+
+| Method | Description |
 | :--- | :--- |
-| `setModel(type)` | Sets the AI model using built-in enums (e.g., `MODEL_DETECT`). |
-| `setModelParam(...)` | Dynamically adjusts parameters (Probability, Color H/S/V thresholds, etc.). |
-| `setZoom(factor)` | Controls camera zoom level (Supported range: 1.0 - 5.0). |
-| `exec()` | Deploys the configuration and starts the sensor. |
-| `poll()` | Continuously polls serial data and triggers the result callback. |
-| `getBox(obj, coord)` | Retrieves bounding box coordinates (`LEFT`, `TOP`, `RIGHT`, `BOTTOM`). |
+| `getLabel(obj)` | Gets the classification label name of the target. |
+| `getScore(obj)` | Gets the recognition confidence score of the target. |
+| `getBox(obj, coord)` | Gets bounding box coordinates. `coord` options: `BOX_LEFT`, `BOX_TOP`, `BOX_RIGHT`, `BOX_BOTTOM`. |
+| `getBoxCenter(obj, axis)` | Gets the center point of the bounding box. `axis` options: `POINT_X`, `POINT_Y`. |
+| `getPoint(obj, idx, axis)` | Gets keypoint data. `idx` is the point index, `axis` is the coordinate axis. |
+
+### Convenience Query Interface (by ID or Label)
+Supports quick data retrieval by index `id` or label string `label`, such as:
+* `getBoxById(id, coord)`
+* `getBoxByLabel(label, coord)`
+* `hasLabel(label)`: Checks if the current frame contains a specific label.
+
+## 4. Constants (Enums)
+
+| Type | Enum Values |
+| :--- | :--- |
+| **ModelType** | `MODEL_DETECT`(1), `MODEL_CLASSFY`(2), `MODEL_PPOCR`(3), `MODEL_FACEREC`(4),`MODEL_TRACK`(5),`MODEL_POSE`(6), `MODEL_QRCODE`(7),`MODEL_COLOR_DETECT`(8),`MODEL_LINE_TRACK`(9) |
+| **BoxCoord** | `BOX_LEFT`(0), `BOX_TOP`(1), `BOX_RIGHT`(2), `BOX_BOTTOM`(3) |
+| **PointCoord**| `POINT_X`(0), `POINT_Y`(1) |
