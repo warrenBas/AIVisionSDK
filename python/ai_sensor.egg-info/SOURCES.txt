@@ -1,0 +1,11 @@
+setup.py
+ai_sensor/__init__.py
+ai_sensor/core.py
+ai_sensor/mpy_uart.py
+ai_sensor/protocol.py
+ai_sensor/py_uart.py
+ai_sensor.egg-info/PKG-INFO
+ai_sensor.egg-info/SOURCES.txt
+ai_sensor.egg-info/dependency_links.txt
+ai_sensor.egg-info/requires.txt
+ai_sensor.egg-info/top_level.txt
